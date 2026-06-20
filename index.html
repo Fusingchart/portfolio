@@ -839,6 +839,30 @@ inp.addEventListener('keydown', e => {
   }
 });
 
+/* ─── global keyboard shortcuts ─────────────────────────────── */
+const SEC_KEYS = ['about', 'projects', 'skills', 'writing', 'contact'];
+let lastSec = null;
+
+document.addEventListener('keydown', e => {
+  if (document.activeElement === inp) return; // let input handle its own keys
+  const n = parseInt(e.key);
+  if (n >= 1 && n <= 5) { sec(SEC_KEYS[n - 1]); lastSec = SEC_KEYS[n - 1]; return; }
+  if (e.key === 'Escape') {
+    if (lastSec) sec(lastSec);
+    else sec('about');
+    return;
+  }
+});
+
+// also track lastSec on normal navigation
+const _origSec = sec;
+// patch openProject so Esc always returns to projects
+const _origOpenProject = openProject;
+window.openProject = function(key) {
+  lastSec = 'projects';
+  _origOpenProject(key);
+};
+
 /* ─── boot ───────────────────────────────────────────────────── */
 setChips(defaultChips());
 render([
