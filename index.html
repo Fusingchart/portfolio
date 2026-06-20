@@ -184,6 +184,9 @@
     .ln.gap     { display: block; height: 8px; }
     .ln.err     { color: var(--red); }
     .ln.ok      { color: var(--green); }
+    .ln.nf      { color: #b8b8b8; }
+    .ln.nf::before { content: ''; }
+    .ln.dim2    { color: var(--dim); }
 
     /* cursor blink on last line while typing */
     .cursor {
@@ -839,8 +842,18 @@ inp.addEventListener('keydown', e => {
 /* ─── boot ───────────────────────────────────────────────────── */
 setChips(defaultChips());
 render([
-  ['cmd',  '$ rish --portfolio'],
-  ['sub',  'pick a section from the sidebar, or type a command below'],
+  ['cmd',  '$ neofetch'],
+  ['gap',  ''],
+  ['ok',   '  rish@portfolio'],
+  ['dim2', '  ──────────────────────────────'],
+  ['nf',   '  OS      High School Junior, Bay Area'],
+  ['nf',   '  Shell   bash + too many tabs open'],
+  ['nf',   '  Focus   ML / AI — from scratch, not APIs'],
+  ['nf',   '  Status  building sparse MoE trainer on one 3090'],
+  ['nf',   '  Uptime  16 years'],
+  ['nf',   '  Memory  enough for one more paper tonight'],
+  ['gap',  ''],
+  ['sub',  '  navigate the sidebar or type a command below'],
   ['gap',  ''],
 ]);
 </script>
