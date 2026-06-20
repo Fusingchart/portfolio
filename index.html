@@ -1,0 +1,848 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Rish Rao</title>
+  <meta name="description" content="High school developer focused on AI/ML." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg:       #0f0f0f;
+      --bg2:      #161616;
+      --bg3:      #1c1c1c;
+      --border:   rgba(255,255,255,0.07);
+      --border2:  rgba(255,255,255,0.12);
+      --text:     #d4d4d4;
+      --dim:      #606060;
+      --dim2:     #888;
+      --green:    #4ec9a0;
+      --blue:     #569cd6;
+      --purple:   #c586c0;
+      --amber:    #ce9178;
+      --red:      #f44747;
+      --comment:  #6a9955;
+      --mono:     'JetBrains Mono', 'Consolas', monospace;
+    }
+
+    html, body {
+      height: 100%;
+      background: var(--bg);
+      color: var(--text);
+      font-family: var(--mono);
+      overflow: hidden;
+    }
+
+    .window {
+      width: 100%;
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+      animation: fadeIn 0.4s ease both;
+    }
+    @keyframes fadeIn { from { opacity:0; transform:translateY(8px); } to { opacity:1; transform:none; } }
+
+    /* titlebar */
+    .titlebar {
+      display: flex;
+      align-items: center;
+      padding: 10px 16px;
+      background: var(--bg3);
+      border-bottom: 1px solid var(--border);
+      gap: 8px;
+      user-select: none;
+    }
+    .dots { display: flex; gap: 6px; }
+    .dot  { width: 12px; height: 12px; border-radius: 50%; }
+    .d-r  { background: #ff5f57; }
+    .d-y  { background: #ffbd2e; }
+    .d-g  { background: #28c840; }
+    .titlebar-name { flex: 1; text-align: center; font-size: 12px; color: var(--dim2); letter-spacing: 0.03em; }
+
+    /* layout */
+    .body {
+      display: grid;
+      grid-template-columns: 220px 1fr;
+      flex: 1;
+      overflow: hidden;
+    }
+
+    /* ── sidebar (VS Code explorer style) ── */
+    .sidebar {
+      background: var(--bg2);
+      border-right: 1px solid var(--border);
+      display: flex;
+      flex-direction: column;
+      height: 100%;
+      overflow-y: auto;
+      overflow-x: hidden;
+      user-select: none;
+    }
+    .sidebar::-webkit-scrollbar { width: 3px; }
+    .sidebar::-webkit-scrollbar-thumb { background: var(--border); }
+
+    .ex-panel-title {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 8px 12px 8px 16px;
+      font-size: 11px; font-weight: 500;
+      color: var(--dim2); letter-spacing: 0.08em; text-transform: uppercase;
+      border-bottom: 1px solid var(--border);
+      flex-shrink: 0;
+    }
+
+    .ex-section { flex-shrink: 0; }
+    .ex-section-header {
+      display: flex; align-items: center; gap: 4px;
+      padding: 4px 8px 4px 6px;
+      font-size: 11px; font-weight: 500;
+      color: var(--text); letter-spacing: 0.04em; text-transform: uppercase;
+      cursor: pointer;
+      background: none; border: none; width: 100%;
+      font-family: var(--mono); text-align: left;
+    }
+    .ex-section-header:hover { background: rgba(255,255,255,0.03); }
+    .ex-chevron { font-size: 10px; color: var(--dim2); transition: transform 0.15s; flex-shrink: 0; }
+    .ex-section.collapsed .ex-chevron { transform: rotate(-90deg); }
+    .ex-section.collapsed .ex-body { display: none; }
+
+    .ex-item {
+      display: flex; align-items: center; gap: 5px;
+      padding: 2px 0 2px 0;
+      padding-left: var(--indent, 22px);
+      font-size: 13px; color: var(--dim2);
+      cursor: pointer;
+      background: none; border: none; width: 100%;
+      font-family: var(--mono); text-align: left;
+      white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+      line-height: 22px; height: 22px;
+    }
+    .ex-item:hover { background: rgba(255,255,255,0.05); color: var(--text); }
+    .ex-item.active { background: rgba(86,156,214,0.15); color: #c8d4e8; }
+    .ex-item.active .ex-icon { color: #9cdcfe; }
+    .ex-icon { font-size: 14px; flex-shrink: 0; }
+    .ex-icon.folder  { color: #dcb67a; }
+    .ex-icon.file-sh { color: var(--green); }
+    .ex-icon.file-md { color: var(--blue); }
+    .ex-icon.file-py { color: #3572a5; }
+    .ex-icon.file-ts { color: #2f74c0; }
+    .ex-icon.wip     { color: var(--dim); }
+
+    .ex-subitem { --indent: 38px; }
+    .ex-badge {
+      margin-left: auto; margin-right: 8px;
+      font-size: 10px; padding: 1px 5px; border-radius: 3px;
+      background: rgba(255,255,255,0.07); color: var(--dim2);
+      flex-shrink: 0;
+    }
+
+    .ex-env {
+      margin-top: auto;
+      border-top: 1px solid var(--border);
+      flex-shrink: 0;
+    }
+    .ex-env-row {
+      display: flex; align-items: center; gap: 6px;
+      padding: 3px 12px 3px 16px;
+      font-size: 11px; color: var(--dim);
+      line-height: 20px;
+    }
+    .ex-env-row span { margin-left: auto; color: var(--dim2); font-size: 11px; }
+
+    /* terminal */
+    .terminal {
+      background: var(--bg);
+      display: flex;
+      flex-direction: column;
+      height: 100%;
+      overflow: hidden;
+    }
+    .output {
+      flex: 1;
+      padding: 32px 40px;
+      overflow-y: auto;
+      font-size: 14px;
+      line-height: 1.9;
+      max-width: 760px;
+    }
+    .output::-webkit-scrollbar { width: 3px; }
+    .output::-webkit-scrollbar-thumb { background: var(--border2); border-radius: 2px; }
+
+    .ln { display: block; white-space: pre-wrap; word-break: break-word; }
+    .ln.cmd     { color: var(--comment); font-size: 12px; margin-bottom: 20px; }
+    .ln.head    { color: #e0e0e0; font-size: 15px; font-weight: 500; margin-bottom: 6px; }
+    .ln.sub     { color: var(--dim2); font-size: 12px; margin-bottom: 20px; }
+    .ln.label   { color: var(--blue); font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase; margin: 24px 0 8px; }
+    .ln.body    { color: #b8b8b8; }
+    .ln.proj    { color: var(--green); font-weight: 500; margin-top: 24px; }
+    .ln.ptag    { color: var(--dim2); font-size: 12px; margin-bottom: 4px; }
+    .ln.link    { color: var(--blue); font-size: 12px; margin-top: 4px; }
+    .ln.rule    { color: var(--border2); }
+    .ln.gap     { display: block; height: 8px; }
+    .ln.err     { color: var(--red); }
+    .ln.ok      { color: var(--green); }
+
+    /* cursor blink on last line while typing */
+    .cursor {
+      display: inline-block;
+      width: 7px; height: 14px;
+      background: var(--text);
+      vertical-align: middle;
+      margin-left: 1px;
+      animation: blink 1.1s step-end infinite;
+    }
+    @keyframes blink { 0%,100%{opacity:1;} 50%{opacity:0;} }
+
+    /* chips */
+    .chips { display: flex; flex-wrap: wrap; gap: 5px; padding: 8px 20px 10px; border-top: 1px solid var(--border); }
+    .chip {
+      font-size: 11px; padding: 3px 10px;
+      border: 1px solid var(--border2); border-radius: 4px;
+      color: var(--dim2); background: none;
+      font-family: var(--mono); cursor: pointer;
+      transition: all 0.12s;
+    }
+    .chip:hover { border-color: rgba(255,255,255,0.22); color: var(--text); background: rgba(255,255,255,0.04); }
+
+    /* input */
+    .input-row {
+      display: flex; align-items: center; gap: 8px;
+      padding: 10px 20px;
+      border-top: 1px solid var(--border);
+    }
+    .prompt-sig { font-size: 12px; color: var(--comment); white-space: nowrap; }
+    .cmd-in {
+      flex: 1; background: none; border: none; outline: none;
+      font-family: var(--mono); font-size: 13px; color: var(--text);
+      caret-color: var(--green);
+    }
+    .cmd-in::placeholder { color: var(--dim); }
+
+    @media (max-width: 540px) {
+      .body { grid-template-columns: 1fr; }
+      .sidebar { display: none; }
+    }
+  </style>
+</head>
+<body>
+
+<div class="window">
+  <div class="titlebar">
+    <div class="dots">
+      <div class="dot d-r"></div>
+      <div class="dot d-y"></div>
+      <div class="dot d-g"></div>
+    </div>
+    <div class="titlebar-name">rish@mbp — ~/portfolio</div>
+  </div>
+
+  <div class="body">
+    <div class="sidebar">
+      <div class="ex-panel-title">Explorer</div>
+
+      <!-- portfolio section -->
+      <div class="ex-section" id="sec-portfolio">
+        <button class="ex-section-header" onclick="toggleSection('sec-portfolio')">
+          <span class="ex-chevron">▾</span> rish-rao
+        </button>
+        <div class="ex-body">
+          <button class="ex-item active" data-sec="about" onclick="sec('about',this)">
+            <span class="ex-icon file-md">◈</span> about.md
+          </button>
+
+          <button class="ex-item" data-sec="projects" onclick="toggleProjects(this)">
+            <span class="ex-icon folder">▸</span> projects
+          </button>
+          <div id="projects-tree" style="display:none;">
+            <button class="ex-item ex-subitem" onclick="openProject('tinygrad')">
+              <span class="ex-icon file-py">◈</span> tinygrad-experiments
+            </button>
+            <button class="ex-item ex-subitem" onclick="openProject('patchwork')">
+              <span class="ex-icon file-py">◈</span> patchwork
+            </button>
+            <button class="ex-item ex-subitem" onclick="openProject('chess')">
+              <span class="ex-icon file-py">◈</span> chess-rl
+            </button>
+            <button class="ex-item ex-subitem" onclick="openProject('context-window')">
+              <span class="ex-icon wip">◈</span> context-window <span class="ex-badge">wip</span>
+            </button>
+          </div>
+
+          <button class="ex-item" data-sec="skills" onclick="sec('skills',this)">
+            <span class="ex-icon file-md">◈</span> skills.md
+          </button>
+          <button class="ex-item" data-sec="writing" onclick="sec('writing',this)">
+            <span class="ex-icon file-md">◈</span> writing
+          </button>
+          <button class="ex-item" data-sec="contact" onclick="sec('contact',this)">
+            <span class="ex-icon file-sh">◈</span> contact.sh
+          </button>
+        </div>
+      </div>
+
+      <!-- environment section -->
+      <div class="ex-section" id="sec-env">
+        <button class="ex-section-header" onclick="toggleSection('sec-env')">
+          <span class="ex-chevron">▾</span> environment
+        </button>
+        <div class="ex-body">
+          <div class="ex-env-row"><span class="ex-icon file-py" style="font-size:11px;">◈</span> python <span>3.12.3</span></div>
+          <div class="ex-env-row"><span class="ex-icon file-py" style="font-size:11px;">◈</span> pytorch <span>2.3.0+cu121</span></div>
+          <div class="ex-env-row"><span class="ex-icon file-ts" style="font-size:11px;">◈</span> node <span>20.11.0</span></div>
+          <div class="ex-env-row"><span class="ex-icon file-sh" style="font-size:11px;">◈</span> cuda <span>12.1</span></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="terminal">
+      <div class="output" id="out"></div>
+      <div class="chips" id="chips"></div>
+      <div class="input-row">
+        <span class="prompt-sig">~/portfolio $</span>
+        <input class="cmd-in" id="cmdin" placeholder="type a command…" autocomplete="off" spellcheck="false" />
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+/* ─── content ───────────────────────────────────────────────── */
+const SECTIONS = {
+  about: [
+    ['cmd',  '$ cat about.txt'],
+    ['head', 'Rish Rao'],
+    ['sub',  'High school junior  ·  Bay Area, CA  ·  open to internships & collabs'],
+    ['body', 'I got into ML because I wanted to understand how things actually work'],
+    ['body', 'under the hood — not just wrap an API call and call it a product.'],
+    ['gap',  ''],
+    ['body', 'Right now I\'m building a sparse MoE trainer that fits on a single 3090,'],
+    ['body', 'and thinking a lot about efficient inference. Before that I spent a summer'],
+    ['body', 'as a research intern at a university ML lab, which taught me that most'],
+    ['body', 'ideas fail quietly and that\'s fine.'],
+    ['label','currently interested in'],
+    ['body', 'Language models and fine-tuning  ·  Reinforcement learning'],
+    ['body', 'Efficient inference  ·  Making ML research legible'],
+    ['gap',  ''],
+  ],
+  projects: [
+    ['cmd',  '$ ls projects/'],
+    ['proj', 'tinygrad-experiments'],
+    ['ptag', 'Python · NumPy · autograd from scratch'],
+    ['body', 'Reimplemented autograd and backprop without any ML library to understand'],
+    ['body', 'gradient flow at the metal level. Trains MNIST in ~40s on CPU.'],
+    ['body', 'The goal was comprehension, not speed — and I got both eventually.'],
+    ['link', '→ github.com/rishr/tinygrad-experiments'],
+    ['proj', 'patchwork'],
+    ['ptag', 'PyTorch · HuggingFace · LoRA · FastAPI'],
+    ['body', 'A LoRA fine-tuner with a web UI. Point it at any HuggingFace model and'],
+    ['body', 'a JSONL dataset, configure the run, watch it train. Built because existing'],
+    ['body', 'tools had too much magic and too little visibility into what\'s happening.'],
+    ['link', '→ patchwork.rishr.dev  —  150+ training runs logged'],
+    ['proj', 'chess-rl'],
+    ['ptag', 'Python · ResNet · MCTS · self-play'],
+    ['body', 'AlphaZero-style chess engine trained entirely via self-play on my laptop'],
+    ['body', 'over one weekend. Policy + value net (10-block ResNet), 800-sim MCTS.'],
+    ['body', 'Sits around 1450 Elo. I cannot beat it anymore.'],
+    ['link', '→ github.com/rishr/chess-rl'],
+    ['proj', 'context-window  (wip)'],
+    ['ptag', 'Chrome extension · summarization · DistilBERT'],
+    ['body', 'Compresses long threads and docs before sending to an LLM, cutting token'],
+    ['body', 'usage without losing the relevant context. Hybrid extractive + abstractive.'],
+    ['gap',  ''],
+  ],
+  skills: [
+    ['cmd',  '$ cat skills.txt'],
+    ['label','solid'],
+    ['body', 'Python  ·  PyTorch  ·  scikit-learn  ·  HuggingFace Transformers'],
+    ['body', 'NumPy / Pandas  ·  Linux  ·  Git  ·  SQL'],
+    ['label','comfortable'],
+    ['body', 'C++  ·  JavaScript / TypeScript  ·  React  ·  FastAPI  ·  Docker'],
+    ['label','actively learning'],
+    ['body', 'CUDA / Triton kernels  ·  JAX + Flax  ·  distributed training (FSDP)'],
+    ['label','context'],
+    ['body', 'Read ~30 papers in the last 6 months. Active on arXiv, ML Collective,'],
+    ['body', 'and a few reading groups. I prefer understanding things from first principles'],
+    ['body', 'over collecting framework badges.'],
+    ['gap',  ''],
+  ],
+  writing: [
+    ['cmd',  '$ ls writing/'],
+    ['proj', 'Why I re-implemented autograd from scratch'],
+    ['ptag', 'Nov 2024'],
+    ['body', 'Not a tutorial. More of a journal of what actually surprised me.'],
+    ['body', 'Backprop is conceptually simple and numerically annoying in equal measure.'],
+    ['proj', 'Training a chess engine on one GPU over a weekend'],
+    ['ptag', 'Sep 2024'],
+    ['body', 'Walk-through of the self-play loop, the bugs I hit, and why MCTS is'],
+    ['body', 'harder to implement correctly than the pseudocode suggests.'],
+    ['proj', 'What I wish I knew before my first research project'],
+    ['ptag', 'Jul 2024'],
+    ['body', 'How to read papers fast, how to scope experiments, and how to not'],
+    ['body', 'spiral when results are negative (which is most of the time).'],
+    ['label','find me at'],
+    ['link', '→ rish.substack.com'],
+    ['gap',  ''],
+  ],
+  contact: [
+    ['cmd',  '$ ./contact.sh'],
+    ['head', 'Let\'s talk'],
+    ['sub',  'I reply same day, usually'],
+    ['body', 'I\'m open to research collaborations, summer internships, hackathon teams,'],
+    ['body', 'and anyone who wants to think through an interesting ML problem.'],
+    ['label','reach me at'],
+    ['body', 'Email     →  rishrao987@gmail.com'],
+    ['body', 'GitHub    →  github.com/rishr'],
+    ['body', 'LinkedIn  →  linkedin.com/in/rishrao'],
+    ['gap',  ''],
+  ],
+};
+
+const CMDS = {
+  help: [
+    ['cmd',  '$ help'],
+    ['label','available commands'],
+    ['body', 'about      who I am'],
+    ['body', 'projects   what I\'ve built'],
+    ['body', 'skills     what I know'],
+    ['body', 'writing    notes & posts'],
+    ['body', 'contact    get in touch'],
+    ['body', 'git log    recent commits'],
+    ['body', 'clear      clear screen'],
+    ['gap',  ''],
+  ],
+  'git log': [
+    ['cmd',  '$ git log --oneline -7'],
+    ['ok',   '3f9a12e  feat(patchwork): add LoRA rank scheduler'],
+    ['ok',   'c4b8d31  fix(chess-rl): value head was off by a sign'],
+    ['ok',   '9e2f0a7  feat: tinygrad conv2d backward pass'],
+    ['ok',   'b1c5e84  docs: finally write the chess-rl readme'],
+    ['ok',   '7a3d0f2  feat(patchwork): wandb integration'],
+    ['ok',   'e8f2c19  chore: clean up dead experiments'],
+    ['ok',   '2d6b4a1  init: let\'s go'],
+    ['gap',  ''],
+  ],
+};
+
+/* ─── project deep-dives ────────────────────────────────────── */
+const PROJECTS = {
+  tinygrad: [
+    ['cmd',   '$ cat projects/tinygrad-experiments/README.md'],
+    ['head',  'tinygrad-experiments'],
+    ['ptag',  'Python · NumPy · autograd from scratch  ·  github.com/rishr/tinygrad-experiments'],
+    ['gap',   ''],
+    ['label', 'what it is'],
+    ['body',  'A from-scratch implementation of automatic differentiation and backpropagation'],
+    ['body',  'using nothing but NumPy. No PyTorch, no TensorFlow, no autograd library.'],
+    ['body',  'Supports forward/backward passes for dense layers, conv2d, ReLU, softmax,'],
+    ['body',  'cross-entropy loss, and basic optimizers (SGD, Adam).'],
+    ['gap',   ''],
+    ['label', 'why I built it'],
+    ['body',  'I kept using PyTorch without really knowing what .backward() was doing.'],
+    ['body',  'Reading the Karpathy micrograd series helped, but I needed to build it myself'],
+    ['body',  'to actually believe it. The moment the conv2d gradient started flowing correctly'],
+    ['body',  'was one of the more satisfying debugging sessions I\'ve had.'],
+    ['gap',   ''],
+    ['label', 'what I learned'],
+    ['body',  'Gradient flow is mostly bookkeeping. The chain rule isn\'t the hard part —'],
+    ['body',  'getting the tensor shapes right through a conv backward pass is.'],
+    ['body',  'Also: numerical gradient checking is your best friend when something\'s wrong.'],
+    ['gap',   ''],
+    ['label', 'results'],
+    ['body',  'Trains a 2-layer CNN to ~98.8% on MNIST in ~40s on CPU.'],
+    ['link',  '→ github.com/rishr/tinygrad-experiments'],
+    ['gap',   ''],
+  ],
+  patchwork: [
+    ['cmd',   '$ cat projects/patchwork/README.md'],
+    ['head',  'patchwork'],
+    ['ptag',  'PyTorch · HuggingFace · LoRA · FastAPI · React  ·  patchwork.rishr.dev'],
+    ['gap',   ''],
+    ['label', 'what it is'],
+    ['body',  'A LoRA fine-tuning tool with a web UI. You give it a HuggingFace model ID,'],
+    ['body',  'a JSONL dataset, and some hyperparameters — it trains, logs metrics in real'],
+    ['body',  'time, and saves your adapter weights when it\'s done. 150+ runs logged so far.'],
+    ['gap',   ''],
+    ['label', 'why I built it'],
+    ['body',  'Every existing fine-tuning tool either hid too much (no idea what the loss'],
+    ['body',  'curve looks like mid-run) or required too much setup. I wanted something'],
+    ['body',  'that felt fast to use but didn\'t abstract away the training loop.'],
+    ['gap',   ''],
+    ['label', 'how it works'],
+    ['body',  'FastAPI backend handles training in a background thread and streams logs'],
+    ['body',  'via WebSocket. The frontend polls for metrics and renders them live.'],
+    ['body',  'LoRA adapters are saved as .safetensors and can be pushed to HuggingFace Hub.'],
+    ['gap',   ''],
+    ['label', 'status'],
+    ['body',  'Live at patchwork.rishr.dev. Supports causal LMs (GPT-2, Mistral, LLaMA).'],
+    ['body',  'Sequence-to-sequence support is in progress.'],
+    ['link',  '→ patchwork.rishr.dev'],
+    ['gap',   ''],
+  ],
+  chess: [
+    ['cmd',   '$ cat projects/chess-rl/README.md'],
+    ['head',  'chess-rl'],
+    ['ptag',  'Python · ResNet · MCTS · self-play  ·  github.com/rishr/chess-rl'],
+    ['gap',   ''],
+    ['label', 'what it is'],
+    ['body',  'An AlphaZero-style chess engine trained entirely via self-play, with no'],
+    ['body',  'human game data. Architecture: a 10-block ResNet with a shared trunk,'],
+    ['body',  'policy head (move probabilities), and value head (win probability).'],
+    ['body',  'Search: 800-simulation MCTS with PUCT exploration.'],
+    ['gap',   ''],
+    ['label', 'why I built it'],
+    ['body',  'I wanted to understand RL from first principles, and chess felt like a'],
+    ['body',  'clean testbed — well-defined state space, clear win condition, and enough'],
+    ['body',  'complexity that naive approaches don\'t work.'],
+    ['gap',   ''],
+    ['label', 'the build process'],
+    ['body',  'Started Friday evening. By Sunday night it had trained for ~36 hours on'],
+    ['body',  'my laptop\'s GPU. The first version played random moves. The second lost'],
+    ['body',  'consistently to Stockfish level 1. The final version sits around 1450 Elo.'],
+    ['body',  'I cannot beat it. I\'ve tried.'],
+    ['gap',   ''],
+    ['label', 'what surprised me'],
+    ['body',  'The value head converges much faster than the policy head. Also, MCTS'],
+    ['body',  'without a good value estimate is basically just slow random search.'],
+    ['link',  '→ github.com/rishr/chess-rl'],
+    ['gap',   ''],
+  ],
+  'context-window': [
+    ['cmd',   '$ cat projects/context-window/README.md'],
+    ['head',  'context-window  (wip)'],
+    ['ptag',  'Chrome extension · DistilBERT · extractive + abstractive summarization'],
+    ['gap',   ''],
+    ['label', 'what it is'],
+    ['body',  'A Chrome extension that compresses long threads, docs, and email chains'],
+    ['body',  'before sending them to an LLM. Cuts token usage significantly while'],
+    ['body',  'preserving the content that actually matters for the query.'],
+    ['gap',   ''],
+    ['label', 'the approach'],
+    ['body',  'Two-stage pipeline: extractive pass (sentence scoring via DistilBERT'],
+    ['body',  'embeddings + cosine similarity) filters the input down to the most relevant'],
+    ['body',  'chunks, then an abstractive pass rewrites them into coherent prose.'],
+    ['body',  'The user sets a target compression ratio (e.g. 30% of original length).'],
+    ['gap',   ''],
+    ['label', 'current status'],
+    ['body',  'Core compression pipeline works. Chrome extension UI is functional.'],
+    ['body',  'Still tuning the extractive scoring — right now it occasionally drops'],
+    ['body',  'context that turns out to be important later in a thread.'],
+    ['body',  'Target: private beta in a few weeks.'],
+    ['gap',   ''],
+  ],
+};
+
+/* ─── renderer ──────────────────────────────────────────────── */
+const out   = document.getElementById('out');
+const inp   = document.getElementById('cmdin');
+const chips = document.getElementById('chips');
+let busy = false;
+let cursorEl = null;
+let timer = null;
+
+function cancelRender() {
+  if (timer) { clearTimeout(timer); timer = null; }
+  removeCursor();
+  busy = false;
+}
+
+function clearOutput() {
+  cancelRender();
+  out.innerHTML = '';
+}
+
+function removeCursor() {
+  if (cursorEl && cursorEl.parentNode) cursorEl.parentNode.removeChild(cursorEl);
+  cursorEl = null;
+}
+
+/* URL patterns that should become real links */
+const LINK_RE = /((https?:\/\/|→\s*)([\w.-]+\.(dev|com|net|io|dev)[\w/.-]*))/gi;
+
+function addLine(type, text) {
+  removeCursor();
+  if (type === 'gap') {
+    const sp = document.createElement('div');
+    sp.className = 'ln gap';
+    out.appendChild(sp);
+    return sp;
+  }
+  const el = document.createElement('div');
+  el.className = 'ln ' + (type || '');
+
+  /* linkify link lines */
+  if (type === 'link' || type === 'ptag') {
+    const urlRe = /([\w.-]+\.(dev|com|net|io)(\/[\w/.-]*)?)/g;
+    let last = 0, m;
+    while ((m = urlRe.exec(text)) !== null) {
+      if (m.index > last) el.appendChild(document.createTextNode(text.slice(last, m.index)));
+      const a = document.createElement('a');
+      a.href = m[0].startsWith('http') ? m[0] : 'https://' + m[0];
+      a.textContent = m[0];
+      a.target = '_blank';
+      a.rel = 'noopener';
+      a.style.cssText = 'color:var(--blue);text-decoration:underline;text-underline-offset:3px;';
+      el.appendChild(a);
+      last = m.index + m[0].length;
+    }
+    if (last < text.length) el.appendChild(document.createTextNode(text.slice(last)));
+  } else {
+    el.textContent = text;
+  }
+
+  /* make project names in the list clickable */
+  if (type === 'proj') {
+    const key = projectKey(text);
+    if (PROJECTS[key]) {
+      el.style.cursor = 'pointer';
+      el.addEventListener('click', () => openProject(key));
+      const hint = document.createElement('span');
+      hint.style.cssText = 'font-size:11px;color:var(--blue);margin-left:10px;opacity:0.6;';
+      hint.textContent = '↵ expand';
+      el.appendChild(hint);
+    }
+  }
+
+  out.appendChild(el);
+  out.scrollTop = out.scrollHeight;
+  return el;
+}
+
+function typeLine(type, text, speed) {
+  return new Promise(resolve => {
+    removeCursor();
+    const el = document.createElement('div');
+    el.className = 'ln ' + (type || '');
+    out.appendChild(el);
+
+    cursorEl = document.createElement('span');
+    cursorEl.className = 'cursor';
+    el.appendChild(cursorEl);
+
+    let i = 0;
+    function tick() {
+      if (i < text.length) {
+        el.insertBefore(document.createTextNode(text[i++]), cursorEl);
+        out.scrollTop = out.scrollHeight;
+        timer = setTimeout(tick, speed + (Math.random() * speed * 0.3));
+      } else {
+        removeCursor();
+        resolve();
+      }
+    }
+    tick();
+  });
+}
+
+function render(lines, opts = {}) {
+  busy = true;
+  const delay = opts.lineDelay ?? 32;
+
+  let idx = 0;
+  function next() {
+    if (idx >= lines.length) { busy = false; return; }
+    const [type, text] = lines[idx++];
+    if (idx === 1) {
+      typeLine(type, text, 22).then(() => { timer = setTimeout(next, delay); });
+    } else {
+      addLine(type, text);
+      timer = setTimeout(next, delay);
+    }
+  }
+  next();
+}
+
+/* ─── chips ──────────────────────────────────────────────────── */
+function setChips(list) {
+  chips.innerHTML = '';
+  list.forEach(({ label, cmd }) => {
+    const b = document.createElement('button');
+    b.className = 'chip';
+    b.textContent = label;
+    b.onclick = () => run(cmd || label);
+    chips.appendChild(b);
+  });
+}
+
+/* ─── project key normalizer ─────────────────────────────────── */
+function projectKey(text) {
+  const t = text.toLowerCase().replace(/\s*\(wip\)/, '').trim();
+  if (t.includes('tinygrad')) return 'tinygrad';
+  if (t.includes('patchwork')) return 'patchwork';
+  if (t.includes('chess')) return 'chess';
+  if (t.includes('context')) return 'context-window';
+  return t;
+}
+
+/* ─── navigation ─────────────────────────────────────────────── */
+function sec(key) {
+  clearOutput();
+  setActiveItem(key);
+  const projectChips = key === 'projects'
+    ? [
+        { label: 'open tinygrad',       cmd: 'open tinygrad' },
+        { label: 'open patchwork',      cmd: 'open patchwork' },
+        { label: 'open chess-rl',       cmd: 'open chess' },
+        { label: 'open context-window', cmd: 'open context-window' },
+      ]
+    : [];
+  const baseChips = [
+    { label: 'projects', cmd: 'projects' },
+    { label: 'git log',  cmd: 'git log'  },
+    { label: 'help',     cmd: 'help'     },
+  ];
+  setChips([...projectChips, ...baseChips]);
+  render(SECTIONS[key]);
+}
+
+function openProject(key) {
+  if (!PROJECTS[key]) return;
+  clearOutput();
+  setActiveItem('projects');
+  setChips([
+    { label: '← back to projects', cmd: 'projects' },
+    { label: 'open tinygrad',       cmd: 'open tinygrad' },
+    { label: 'open patchwork',      cmd: 'open patchwork' },
+    { label: 'open chess-rl',       cmd: 'open chess' },
+    { label: 'open context-window', cmd: 'open context-window' },
+  ]);
+  render(PROJECTS[key]);
+}
+
+function run(raw) {
+  const c = raw.trim().toLowerCase();
+  if (!c) return;
+  if (c === 'clear') { clearOutput(); setChips(defaultChips()); return; }
+  if (SECTIONS[c]) { sec(c); return; }
+  const m = c.match(/^open\s+(.+)$/);
+  if (m) {
+    const k = projectKey(m[1]);
+    if (PROJECTS[k]) { openProject(k); return; }
+  }
+  if (CMDS[c]) {
+    clearOutput();
+    setChips([{ label: 'projects', cmd: 'projects' }, { label: 'help', cmd: 'help' }]);
+    render(CMDS[c]);
+    return;
+  }
+  clearOutput();
+  addLine('cmd', '$ ' + raw);
+  addLine('err', 'command not found: ' + raw);
+  addLine('body', 'try "help" to see available commands');
+  addLine('gap', '');
+}
+
+function defaultChips() {
+  return ['about','projects','skills','writing','contact'].map(s => ({ label: s, cmd: s }));
+}
+
+/* ─── command history ────────────────────────────────────────── */
+const history = [];
+let histIdx = -1;
+let histDraft = '';
+
+/* ─── tab completion ─────────────────────────────────────────── */
+const ALL_CMDS = [
+  'about', 'projects', 'skills', 'writing', 'contact',
+  'help', 'git log', 'clear',
+  'open tinygrad', 'open patchwork', 'open chess-rl', 'open context-window',
+];
+
+function tabComplete(partial) {
+  if (!partial) return null;
+  const p = partial.toLowerCase();
+  const match = ALL_CMDS.filter(c => c.startsWith(p));
+  if (match.length === 1) return match[0];
+  if (match.length > 1) {
+    // find longest common prefix
+    let prefix = match[0];
+    for (const m of match) {
+      while (!m.startsWith(prefix)) prefix = prefix.slice(0, -1);
+    }
+    return prefix !== p ? prefix : null;
+  }
+  return null;
+}
+
+/* ─── sidebar helpers ────────────────────────────────────────── */
+function toggleSection(id) {
+  document.getElementById(id).classList.toggle('collapsed');
+}
+
+function toggleProjects(btn) {
+  const tree = document.getElementById('projects-tree');
+  const icon = btn.querySelector('.ex-icon');
+  const open = tree.style.display === 'none';
+  tree.style.display = open ? 'block' : 'none';
+  icon.textContent = open ? '▾' : '▸';
+  if (open) sec('projects', btn);
+}
+
+function setActiveItem(secKey) {
+  document.querySelectorAll('.ex-item').forEach(el => el.classList.remove('active'));
+  const match = document.querySelector(`.ex-item[data-sec="${secKey}"]`);
+  if (match) match.classList.add('active');
+}
+
+inp.addEventListener('keydown', e => {
+  if (e.key === 'Enter') {
+    const v = inp.value.trim();
+    inp.value = '';
+    histIdx = -1;
+    histDraft = '';
+    if (!v) return;
+    if (history[0] !== v) history.unshift(v);
+    if (history.length > 50) history.pop();
+    run(v);
+    return;
+  }
+
+  if (e.key === 'ArrowUp') {
+    e.preventDefault();
+    if (histIdx === -1) histDraft = inp.value;
+    if (histIdx < history.length - 1) {
+      histIdx++;
+      inp.value = history[histIdx];
+      requestAnimationFrame(() => inp.setSelectionRange(inp.value.length, inp.value.length));
+    }
+    return;
+  }
+
+  if (e.key === 'ArrowDown') {
+    e.preventDefault();
+    if (histIdx > 0) {
+      histIdx--;
+      inp.value = history[histIdx];
+    } else if (histIdx === 0) {
+      histIdx = -1;
+      inp.value = histDraft;
+    }
+    requestAnimationFrame(() => inp.setSelectionRange(inp.value.length, inp.value.length));
+    return;
+  }
+
+  if (e.key === 'Tab') {
+    e.preventDefault();
+    const completed = tabComplete(inp.value);
+    if (completed) {
+      inp.value = completed;
+      /* flash the input briefly to show completion fired */
+      inp.style.color = 'var(--green)';
+      setTimeout(() => inp.style.color = '', 180);
+    }
+    return;
+  }
+});
+
+/* ─── boot ───────────────────────────────────────────────────── */
+setChips(defaultChips());
+render([
+  ['cmd',  '$ rish --portfolio'],
+  ['sub',  'pick a section from the sidebar, or type a command below'],
+  ['gap',  ''],
+]);
+</script>
+</body>
+</html>
