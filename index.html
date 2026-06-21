@@ -225,9 +225,32 @@
     }
     .cmd-in::placeholder { color: var(--dim); }
 
+    .mobile-nav { display: none; }
+
     @media (max-width: 540px) {
       .body { grid-template-columns: 1fr; }
       .sidebar { display: none; }
+      .output { padding: 20px 18px; padding-bottom: 80px; }
+
+      .mobile-nav {
+        display: flex;
+        position: fixed; bottom: 0; left: 0; right: 0;
+        background: var(--bg2);
+        border-top: 1px solid var(--border2);
+        z-index: 100;
+      }
+      .mobile-nav-btn {
+        flex: 1; display: flex; flex-direction: column;
+        align-items: center; justify-content: center;
+        gap: 3px; padding: 8px 4px 10px;
+        background: none; border: none;
+        font-family: var(--mono); cursor: pointer;
+        color: var(--dim); transition: color 0.12s, background 0.12s;
+      }
+      .mobile-nav-btn:hover { background: rgba(255,255,255,0.04); }
+      .mobile-nav-btn.active { color: var(--blue); }
+      .mobile-nav-btn .mn-icon { font-size: 16px; line-height: 1; }
+      .mobile-nav-btn .mn-label { font-size: 9px; letter-spacing: 0.04em; text-transform: uppercase; }
     }
   </style>
 </head>
@@ -311,6 +334,29 @@
     </div>
   </div>
 </div>
+
+<nav class="mobile-nav" id="mobileNav">
+  <button class="mobile-nav-btn active" data-sec="about" onclick="sec('about')">
+    <span class="mn-icon">◉</span>
+    <span class="mn-label">about</span>
+  </button>
+  <button class="mobile-nav-btn" data-sec="projects" onclick="sec('projects')">
+    <span class="mn-icon">◫</span>
+    <span class="mn-label">projects</span>
+  </button>
+  <button class="mobile-nav-btn" data-sec="skills" onclick="sec('skills')">
+    <span class="mn-icon">≋</span>
+    <span class="mn-label">skills</span>
+  </button>
+  <button class="mobile-nav-btn" data-sec="writing" onclick="sec('writing')">
+    <span class="mn-icon">≡</span>
+    <span class="mn-label">writing</span>
+  </button>
+  <button class="mobile-nav-btn" data-sec="contact" onclick="sec('contact')">
+    <span class="mn-icon">◎</span>
+    <span class="mn-label">contact</span>
+  </button>
+</nav>
 
 <script>
 /* ─── content ───────────────────────────────────────────────── */
@@ -856,6 +902,9 @@ function setActiveItem(secKey) {
   document.querySelectorAll('.ex-item').forEach(el => el.classList.remove('active'));
   const match = document.querySelector(`.ex-item[data-sec="${secKey}"]`);
   if (match) match.classList.add('active');
+  document.querySelectorAll('.mobile-nav-btn').forEach(el => el.classList.remove('active'));
+  const mMatch = document.querySelector(`.mobile-nav-btn[data-sec="${secKey}"]`);
+  if (mMatch) mMatch.classList.add('active');
 }
 
 inp.addEventListener('keydown', e => {
