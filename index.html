@@ -304,6 +304,15 @@
             <button class="ex-item ex-subitem" onclick="openProject('context-window')">
               <span class="ex-icon wip">◈</span> context-window <span class="ex-badge">wip</span>
             </button>
+            <button class="ex-item ex-subitem" onclick="openProject('voxelmorph')">
+              <span class="ex-icon file-py">◈</span> voxelmorph-uncertainty
+            </button>
+            <button class="ex-item ex-subitem" onclick="openProject('authorize-ai')">
+              <span class="ex-icon file-ts">◈</span> authorize-ai
+            </button>
+            <button class="ex-item ex-subitem" onclick="openProject('curiosity-explorer')">
+              <span class="ex-icon file-py">◈</span> curiosity-explorer
+            </button>
           </div>
 
           <button class="ex-item" data-sec="skills" onclick="sec('skills',this)">
@@ -409,6 +418,24 @@ const SECTIONS = {
     ['ptag', 'Chrome extension · summarization · DistilBERT'],
     ['body', 'Compresses long threads and docs before sending to an LLM, cutting token'],
     ['body', 'usage without losing the relevant context. Hybrid extractive + abstractive.'],
+    ['gap',  ''],
+    ['proj', 'voxelmorph-uncertainty'],
+    ['ptag', 'PyTorch · VoxelMorph · MC Dropout · medical imaging'],
+    ['body', 'Uncertainty-aware deformable image registration. Three modes: deterministic,'],
+    ['body', 'MC dropout (epistemic), and aleatoric via Kendall & Gal 2017 loss.'],
+    ['link', '→ github.com/Fusingchart/VoxelmorphUncertaintyEstimation'],
+    ['gap',  ''],
+    ['proj', 'authorize-ai'],
+    ['ptag', 'TypeScript · Next.js · Claude API'],
+    ['body', 'Generates prior authorization letters for independent physician practices.'],
+    ['body', 'Saves small practices hours of insurance paperwork per week.'],
+    ['link', '→ github.com/Fusingchart/authorize-ai'],
+    ['gap',  ''],
+    ['proj', 'curiosity-explorer'],
+    ['ptag', 'Python · PPO · ICM · RL'],
+    ['body', 'Curiosity-driven RL agent using intrinsic motivation (ICM) to explore'],
+    ['body', 'without sparse rewards. Includes live exploration heatmap visualization.'],
+    ['link', '→ github.com/Fusingchart/curiosity-explorer'],
     ['gap',  ''],
   ],
   skills: [
@@ -658,6 +685,82 @@ const PROJECTS = {
     ['body',  'Target: private beta in a few weeks.'],
     ['gap',   ''],
   ],
+  voxelmorph: [
+    ['cmd',   '$ cat projects/voxelmorph-uncertainty/README.md'],
+    ['head',  'voxelmorph uncertainty'],
+    ['ptag',  'PyTorch · VoxelMorph · MC Dropout · Kendall & Gal · medical imaging  ·  github.com/Fusingchart/VoxelmorphUncertaintyEstimation'],
+    ['gap',   ''],
+    ['label', 'what it is'],
+    ['body',  'An uncertainty-aware extension of VoxelMorph — a deformable image registration'],
+    ['body',  'framework used in medical imaging. The model doesn\'t just predict where pixels'],
+    ['body',  'move; it also estimates how confident it is in each prediction.'],
+    ['gap',   ''],
+    ['label', 'three uncertainty modes'],
+    ['body',  'deterministic   — standard VoxelMorph baseline, no uncertainty'],
+    ['body',  'mc_dropout      — epistemic uncertainty via Monte Carlo dropout at inference'],
+    ['body',  'aleatoric       — heteroscedastic uncertainty with a learned per-voxel variance'],
+    ['body',  '                  head, using the Kendall & Gal 2017 loss formulation'],
+    ['gap',   ''],
+    ['label', 'why it matters'],
+    ['body',  'In clinical settings, knowing where a registration model is uncertain'],
+    ['body',  'is as important as the registration itself. A model that says "I\'m not'],
+    ['body',  'sure about this boundary" is more trustworthy than one that doesn\'t.'],
+    ['gap',   ''],
+    ['label', 'related work'],
+    ['body',  'Extended into FlowMorphUncertainty — using flow matching posteriors for'],
+    ['body',  'calibrated uncertainty in echocardiography deformable registration.'],
+    ['link',  '→ github.com/Fusingchart/VoxelmorphUncertaintyEstimation'],
+    ['gap',   ''],
+  ],
+  'authorize-ai': [
+    ['cmd',   '$ cat projects/authorize-ai/README.md'],
+    ['head',  'authorize-ai'],
+    ['ptag',  'TypeScript · Next.js · Claude API  ·  github.com/Fusingchart/authorize-ai'],
+    ['gap',   ''],
+    ['label', 'what it is'],
+    ['body',  'A tool that generates prior authorization letters for independent physician'],
+    ['body',  'practices. Prior auth is one of the most time-consuming parts of running'],
+    ['body',  'a small practice — doctors spend hours writing letters that insurance'],
+    ['body',  'companies often reject on technicalities.'],
+    ['gap',   ''],
+    ['label', 'the problem'],
+    ['body',  'Independent practices don\'t have the admin staff that hospital systems do.'],
+    ['body',  'A solo physician might spend 20+ hours a month on prior auth paperwork.'],
+    ['body',  'That\'s time not spent seeing patients.'],
+    ['gap',   ''],
+    ['label', 'how it works'],
+    ['body',  'The physician inputs the patient case, diagnosis codes, and requested'],
+    ['body',  'treatment. The model generates a letter in the correct clinical format,'],
+    ['body',  'citing relevant guidelines and framing the medical necessity argument'],
+    ['body',  'in the language insurers actually respond to.'],
+    ['gap',   ''],
+    ['link',  '→ github.com/Fusingchart/authorize-ai'],
+    ['gap',   ''],
+  ],
+  'curiosity-explorer': [
+    ['cmd',   '$ cat projects/curiosity-explorer/README.md'],
+    ['head',  'curiosity-explorer'],
+    ['ptag',  'Python · PyTorch · PPO · ICM · RL  ·  github.com/Fusingchart/curiosity-explorer'],
+    ['gap',   ''],
+    ['label', 'what it is'],
+    ['body',  'A curiosity-driven reinforcement learning agent that uses intrinsic motivation'],
+    ['body',  'to explore environments without relying on sparse extrinsic rewards.'],
+    ['body',  'Includes real-time exploration heatmap visualization to see where the agent'],
+    ['body',  'has and hasn\'t been.'],
+    ['gap',   ''],
+    ['label', 'the approach'],
+    ['body',  'Implements Intrinsic Curiosity Module (ICM) — the agent gets rewarded for'],
+    ['body',  'visiting states its internal model can\'t predict well. Prediction error'],
+    ['body',  'drives exploration, so it naturally gravitates toward novel states.'],
+    ['gap',   ''],
+    ['label', 'why I built it'],
+    ['body',  'Sparse reward RL is where most toy implementations fall apart. I wanted'],
+    ['body',  'to understand how curiosity-based methods actually work at the gradient'],
+    ['body',  'level, not just read about them.'],
+    ['gap',   ''],
+    ['link',  '→ github.com/Fusingchart/curiosity-explorer'],
+    ['gap',   ''],
+  ],
 };
 
 /* ─── renderer ──────────────────────────────────────────────── */
@@ -809,10 +912,13 @@ function sec(key) {
   setActiveItem(key);
   const projectChips = key === 'projects'
     ? [
-        { label: 'open tinygrad',       cmd: 'open tinygrad' },
-        { label: 'open patchwork',      cmd: 'open patchwork' },
-        { label: 'open chess-rl',       cmd: 'open chess' },
-        { label: 'open context-window', cmd: 'open context-window' },
+        { label: 'open tinygrad',          cmd: 'open tinygrad' },
+        { label: 'open patchwork',         cmd: 'open patchwork' },
+        { label: 'open chess-rl',          cmd: 'open chess' },
+        { label: 'open context-window',    cmd: 'open context-window' },
+        { label: 'open voxelmorph',        cmd: 'open voxelmorph' },
+        { label: 'open authorize-ai',      cmd: 'open authorize-ai' },
+        { label: 'open curiosity-explorer',cmd: 'open curiosity-explorer' },
       ]
     : [];
   const baseChips = [
@@ -833,11 +939,14 @@ function openProject(key) {
   clearOutput();
   setActiveItem('projects');
   setChips([
-    { label: '← back to projects', cmd: 'projects' },
-    { label: 'open tinygrad',       cmd: 'open tinygrad' },
-    { label: 'open patchwork',      cmd: 'open patchwork' },
-    { label: 'open chess-rl',       cmd: 'open chess' },
-    { label: 'open context-window', cmd: 'open context-window' },
+    { label: '← back to projects',    cmd: 'projects' },
+    { label: 'open tinygrad',          cmd: 'open tinygrad' },
+    { label: 'open patchwork',         cmd: 'open patchwork' },
+    { label: 'open chess-rl',          cmd: 'open chess' },
+    { label: 'open context-window',    cmd: 'open context-window' },
+    { label: 'open voxelmorph',        cmd: 'open voxelmorph' },
+    { label: 'open authorize-ai',      cmd: 'open authorize-ai' },
+    { label: 'open curiosity-explorer',cmd: 'open curiosity-explorer' },
   ]);
   render(PROJECTS[key]);
 }
@@ -879,6 +988,7 @@ const ALL_CMDS = [
   'about', 'projects', 'skills', 'writing', 'contact',
   'help', 'git log', 'clear',
   'open tinygrad', 'open patchwork', 'open chess-rl', 'open context-window',
+  'open voxelmorph', 'open authorize-ai', 'open curiosity-explorer',
 ];
 
 function tabComplete(partial) {
