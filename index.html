@@ -292,6 +292,9 @@
             <span class="ex-icon folder">▸</span> projects
           </button>
           <div id="projects-tree" style="display:none;">
+            <button class="ex-item ex-subitem" onclick="openProject('flowmorph')">
+              <span class="ex-icon file-py">◈</span> flowmorph-uncertainty
+            </button>
             <button class="ex-item ex-subitem" onclick="openProject('voxelmorph')">
               <span class="ex-icon file-py">◈</span> voxelmorph-uncertainty
             </button>
@@ -389,6 +392,12 @@ const SECTIONS = {
     ['body', 'Uncertainty-aware deformable image registration. Three modes: deterministic,'],
     ['body', 'MC dropout (epistemic), and aleatoric via Kendall & Gal 2017 loss.'],
     ['link', '→ github.com/Fusingchart/VoxelmorphUncertaintyEstimation'],
+    ['gap',  ''],
+    ['proj', 'flowmorph-uncertainty'],
+    ['ptag', 'PyTorch · Flow Matching · echocardiography · medical imaging'],
+    ['body', 'Flow matching posterior for calibrated uncertainty in echocardiography'],
+    ['body', 'deformable registration. Extends VoxelMorph with principled probabilistic flow.'],
+    ['link', '→ github.com/Fusingchart/FlowMorphUncertainty'],
     ['gap',  ''],
     ['proj', 'authorize-ai'],
     ['ptag', 'TypeScript · Next.js · Claude API'],
@@ -546,6 +555,33 @@ const CMDS = {
 
 /* ─── project deep-dives ────────────────────────────────────── */
 const PROJECTS = {
+  flowmorph: [
+    ['cmd',   '$ cat projects/flowmorph-uncertainty/README.md'],
+    ['head',  'flowmorph-uncertainty'],
+    ['ptag',  'PyTorch · Flow Matching · echocardiography · medical imaging  ·  github.com/Fusingchart/FlowMorphUncertainty'],
+    ['gap',   ''],
+    ['label', 'what it is'],
+    ['body',  'A deformable image registration model for echocardiography that uses flow'],
+    ['body',  'matching to learn a posterior over deformation fields — giving calibrated'],
+    ['body',  'uncertainty estimates alongside each registration prediction.'],
+    ['gap',   ''],
+    ['label', 'the approach'],
+    ['body',  'Instead of predicting a single displacement field, the model learns a'],
+    ['body',  'distribution over plausible deformations using flow matching (a continuous'],
+    ['body',  'normalizing flow variant). Sampling from this posterior gives per-voxel'],
+    ['body',  'uncertainty that reflects genuine ambiguity in the registration problem.'],
+    ['gap',   ''],
+    ['label', 'why echocardiography'],
+    ['body',  'Echo images are noisy and low-contrast — registration is genuinely hard,'],
+    ['body',  'and uncertainty estimates are clinically meaningful. A model that hedges'],
+    ['body',  'near blurry boundaries is more useful than one that\'s confidently wrong.'],
+    ['gap',   ''],
+    ['label', 'relation to prior work'],
+    ['body',  'Builds on VoxelmorphUncertaintyEstimation (MC dropout + aleatoric baselines)'],
+    ['body',  'but replaces the variance head with a proper learned posterior via flow matching.'],
+    ['link',  '→ github.com/Fusingchart/FlowMorphUncertainty'],
+    ['gap',   ''],
+  ],
   voxelmorph: [
     ['cmd',   '$ cat projects/voxelmorph-uncertainty/README.md'],
     ['head',  'voxelmorph uncertainty'],
@@ -775,8 +811,7 @@ function sec(key) {
     ? [
         { label: 'open tinygrad',          cmd: 'open tinygrad' },
         { label: 'open patchwork',         cmd: 'open patchwork' },
-        { label: 'open chess-rl',          cmd: 'open chess' },
-        { label: 'open context-window',    cmd: 'open context-window' },
+        { label: 'open flowmorph',         cmd: 'open flowmorph' },
         { label: 'open voxelmorph',        cmd: 'open voxelmorph' },
         { label: 'open authorize-ai',      cmd: 'open authorize-ai' },
         { label: 'open curiosity-explorer',cmd: 'open curiosity-explorer' },
@@ -803,8 +838,7 @@ function openProject(key) {
     { label: '← back to projects',    cmd: 'projects' },
     { label: 'open tinygrad',          cmd: 'open tinygrad' },
     { label: 'open patchwork',         cmd: 'open patchwork' },
-    { label: 'open chess-rl',          cmd: 'open chess' },
-    { label: 'open context-window',    cmd: 'open context-window' },
+    { label: 'open flowmorph',         cmd: 'open flowmorph' },
     { label: 'open voxelmorph',        cmd: 'open voxelmorph' },
     { label: 'open authorize-ai',      cmd: 'open authorize-ai' },
     { label: 'open curiosity-explorer',cmd: 'open curiosity-explorer' },
@@ -848,8 +882,7 @@ let histDraft = '';
 const ALL_CMDS = [
   'about', 'projects', 'skills', 'writing', 'contact',
   'help', 'git log', 'clear',
-  'open tinygrad', 'open patchwork', 'open chess-rl', 'open context-window',
-  'open voxelmorph', 'open authorize-ai', 'open curiosity-explorer',
+  'open flowmorph', 'open voxelmorph', 'open authorize-ai', 'open curiosity-explorer',
 ];
 
 function tabComplete(partial) {
