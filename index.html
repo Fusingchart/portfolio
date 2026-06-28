@@ -304,6 +304,9 @@
             <button class="ex-item ex-subitem" onclick="openProject('curiosity-explorer')">
               <span class="ex-icon file-py">◈</span> curiosity-explorer
             </button>
+            <button class="ex-item ex-subitem" onclick="openProject('ai-glasses')">
+              <span class="ex-icon file-py">◈</span> ai-glasses
+            </button>
           </div>
 
           <button class="ex-item" data-sec="skills" onclick="sec('skills',this)">
@@ -376,8 +379,8 @@ const SECTIONS = {
     ['body', 'I got into ML because I wanted to understand how things actually work'],
     ['body', 'under the hood — not just wrap an API call and call it a product.'],
     ['gap',  ''],
-    ['body', 'Right now I\'m building a sparse MoE trainer that fits on a single 3090,'],
-    ['body', 'and thinking a lot about efficient inference. Before that I spent a summer'],
+    ['body', 'Most recently I built AI-powered AR glasses that overlay real-time context'],
+    ['body', 'from docs and the web. Before that I spent a summer'],
     ['body', 'as a research intern at a university ML lab, which taught me that most'],
     ['body', 'ideas fail quietly and that\'s fine.'],
     ['label','currently interested in'],
@@ -410,6 +413,12 @@ const SECTIONS = {
     ['body', 'Curiosity-driven RL agent using intrinsic motivation (ICM) to explore'],
     ['body', 'without sparse rewards. Includes live exploration heatmap visualization.'],
     ['link', '→ github.com/Fusingchart/curiosity-explorer'],
+    ['gap',  ''],
+    ['proj', 'ai-glasses'],
+    ['ptag', 'Python · computer vision · RAG · hardware'],
+    ['body', 'DIY AR glasses with ambient intelligence — real-time info overlay pulled'],
+    ['body', 'from local docs and the web. Wearable, always-on, context-aware.'],
+    ['link', '→ github.com/Fusingchart/ai-glasses'],
     ['gap',  ''],
   ],
   skills: [
@@ -634,6 +643,29 @@ const PROJECTS = {
     ['link',  '→ github.com/Fusingchart/authorize-ai'],
     ['gap',   ''],
   ],
+  'ai-glasses': [
+    ['cmd',   '$ cat projects/ai-glasses/README.md'],
+    ['head',  'ai-glasses'],
+    ['ptag',  'Python · computer vision · RAG · hardware  ·  github.com/Fusingchart/ai-glasses'],
+    ['gap',   ''],
+    ['label', 'what it is'],
+    ['body',  'DIY AR glasses that give you ambient intelligence — a wearable system that'],
+    ['body',  'overlays real-time contextual information pulled from local documents and'],
+    ['body',  'the web, hands-free and always-on.'],
+    ['gap',   ''],
+    ['label', 'how it works'],
+    ['body',  'A camera captures what you\'re looking at. A retrieval pipeline queries'],
+    ['body',  'relevant docs and live web results. The answer gets surfaced as an overlay'],
+    ['body',  'in your field of view — no phone, no voice command, just context when you need it.'],
+    ['gap',   ''],
+    ['label', 'why I built it'],
+    ['body',  'I wanted to see how far you could push ambient AI with off-the-shelf'],
+    ['body',  'hardware. The interesting problems turned out to be latency (keeping the'],
+    ['body',  'overlay snappy) and relevance (not surfacing noise).'],
+    ['gap',   ''],
+    ['link',  '→ github.com/Fusingchart/ai-glasses'],
+    ['gap',   ''],
+  ],
   'curiosity-explorer': [
     ['cmd',   '$ cat projects/curiosity-explorer/README.md'],
     ['head',  'curiosity-explorer'],
@@ -811,6 +843,7 @@ function sec(key) {
         { label: 'open voxelmorph',        cmd: 'open voxelmorph' },
         { label: 'open authorize-ai',      cmd: 'open authorize-ai' },
         { label: 'open curiosity-explorer',cmd: 'open curiosity-explorer' },
+        { label: 'open ai-glasses',        cmd: 'open ai-glasses' },
       ]
     : [];
   const baseChips = [
@@ -836,6 +869,7 @@ function openProject(key) {
     { label: 'open voxelmorph',        cmd: 'open voxelmorph' },
     { label: 'open authorize-ai',      cmd: 'open authorize-ai' },
     { label: 'open curiosity-explorer',cmd: 'open curiosity-explorer' },
+    { label: 'open ai-glasses',        cmd: 'open ai-glasses' },
   ]);
   render(PROJECTS[key]);
 }
@@ -876,7 +910,7 @@ let histDraft = '';
 const ALL_CMDS = [
   'about', 'projects', 'skills', 'writing', 'contact',
   'help', 'git log', 'clear',
-  'open flowmorph', 'open voxelmorph', 'open authorize-ai', 'open curiosity-explorer',
+  'open flowmorph', 'open voxelmorph', 'open authorize-ai', 'open curiosity-explorer', 'open ai-glasses',
 ];
 
 function tabComplete(partial) {
@@ -1002,7 +1036,7 @@ render([
   ['nf',   '  OS      Sophomore, Interlake HS, Bellevue WA'],
   ['nf',   '  Shell   bash + too many tabs open'],
   ['nf',   '  Focus   ML / AI — from scratch, not APIs'],
-  ['nf',   '  Status  building sparse MoE trainer on one 3090'],
+  ['nf',   '  Status  shipped ai-glasses · thinking about what\'s next'],
   ['nf',   '  Uptime  15 years'],
   ['nf',   '  Memory  enough for one more paper tonight'],
   ['gap',  ''],
