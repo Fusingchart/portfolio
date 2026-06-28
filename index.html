@@ -308,6 +308,9 @@
           <button class="ex-item" data-sec="writing" onclick="sec('writing',this)">
             <span class="ex-icon file-md">◈</span> writing
           </button>
+          <button class="ex-item" data-sec="resume" onclick="sec('resume',this)">
+            <span class="ex-icon file-md">◈</span> resume.pdf
+          </button>
           <button class="ex-item" data-sec="contact" onclick="sec('contact',this)">
             <span class="ex-icon file-sh">◈</span> contact.sh
           </button>
@@ -343,6 +346,10 @@
   <button class="mobile-nav-btn" data-sec="writing" onclick="sec('writing')">
     <span class="mn-icon">≡</span>
     <span class="mn-label">writing</span>
+  </button>
+  <button class="mobile-nav-btn" data-sec="resume" onclick="sec('resume')">
+    <span class="mn-icon">◧</span>
+    <span class="mn-label">resume</span>
   </button>
   <button class="mobile-nav-btn" data-sec="contact" onclick="sec('contact')">
     <span class="mn-icon">◎</span>
@@ -447,6 +454,12 @@ const SECTIONS = {
     ['link', '→ rish.substack.com'],
     ['gap',  ''],
   ],
+  resume: [
+    ['cmd',  '$ open resume.pdf'],
+    ['gap',  ''],
+    ['body', 'Resume coming soon.'],
+    ['gap',  ''],
+  ],
   contact: [
     ['cmd',  '$ ./contact.sh'],
     ['head', 'Let\'s talk'],
@@ -469,12 +482,13 @@ const CMDS = {
     ['body', 'projects      what I\'ve built'],
     ['body', 'skills        what I know'],
     ['body', 'writing       notes & posts'],
+    ['body', 'resume        resume'],
     ['body', 'contact       get in touch'],
     ['label','other commands'],
     ['body', 'git log       recent commits'],
     ['body', 'clear         clear screen'],
     ['label','keyboard shortcuts'],
-    ['body', '1 – 5         jump to section'],
+    ['body', '1 – 6         jump to section'],
     ['body', 'Tab           autocomplete command'],
     ['body', '↑ / ↓         command history'],
     ['body', 'Esc           go back'],
@@ -949,7 +963,7 @@ let histDraft = '';
 
 /* ─── tab completion ─────────────────────────────────────────── */
 const ALL_CMDS = [
-  'about', 'projects', 'skills', 'writing', 'contact',
+  'about', 'projects', 'skills', 'writing', 'resume', 'contact',
   'help', 'git log', 'clear',
   'open flowmorph', 'open voxelmorph', 'open authorize-ai', 'open curiosity-explorer', 'open ai-glasses', 'open streamwatch', 'open spike-pursuit',
 ];
@@ -1044,13 +1058,13 @@ inp.addEventListener('keydown', e => {
 });
 
 /* ─── global keyboard shortcuts ─────────────────────────────── */
-const SEC_KEYS = ['about', 'projects', 'skills', 'writing', 'contact'];
+const SEC_KEYS = ['about', 'projects', 'skills', 'writing', 'resume', 'contact'];
 let lastSec = null;
 
 document.addEventListener('keydown', e => {
   if (document.activeElement === inp) return; // let input handle its own keys
   const n = parseInt(e.key);
-  if (n >= 1 && n <= 5) { sec(SEC_KEYS[n - 1]); lastSec = SEC_KEYS[n - 1]; return; }
+  if (n >= 1 && n <= 6) { sec(SEC_KEYS[n - 1]); lastSec = SEC_KEYS[n - 1]; return; }
   if (e.key === 'Escape') {
     if (lastSec) sec(lastSec);
     else sec('about');
