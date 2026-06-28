@@ -795,8 +795,6 @@ function setChips(list) {
 /* ─── project key normalizer ─────────────────────────────────── */
 function projectKey(text) {
   const t = text.toLowerCase().replace(/\s*\(wip\)/, '').trim();
-  if (t.includes('tinygrad')) return 'tinygrad';
-  if (t.includes('patchwork')) return 'patchwork';
   if (t.includes('chess')) return 'chess';
   if (t.includes('context')) return 'context-window';
   return t;
@@ -809,8 +807,6 @@ function sec(key) {
   setActiveItem(key);
   const projectChips = key === 'projects'
     ? [
-        { label: 'open tinygrad',          cmd: 'open tinygrad' },
-        { label: 'open patchwork',         cmd: 'open patchwork' },
         { label: 'open flowmorph',         cmd: 'open flowmorph' },
         { label: 'open voxelmorph',        cmd: 'open voxelmorph' },
         { label: 'open authorize-ai',      cmd: 'open authorize-ai' },
@@ -836,8 +832,6 @@ function openProject(key) {
   setActiveItem('projects');
   setChips([
     { label: '← back to projects',    cmd: 'projects' },
-    { label: 'open tinygrad',          cmd: 'open tinygrad' },
-    { label: 'open patchwork',         cmd: 'open patchwork' },
     { label: 'open flowmorph',         cmd: 'open flowmorph' },
     { label: 'open voxelmorph',        cmd: 'open voxelmorph' },
     { label: 'open authorize-ai',      cmd: 'open authorize-ai' },
