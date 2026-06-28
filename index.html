@@ -307,6 +307,12 @@
             <button class="ex-item ex-subitem" onclick="openProject('ai-glasses')">
               <span class="ex-icon file-py">◈</span> ai-glasses
             </button>
+            <button class="ex-item ex-subitem" onclick="openProject('streamwatch')">
+              <span class="ex-icon file-ts">◈</span> streamwatch
+            </button>
+            <button class="ex-item ex-subitem" onclick="openProject('spike-pursuit')">
+              <span class="ex-icon file-py">◈</span> spike-prime-pursuit
+            </button>
           </div>
 
           <button class="ex-item" data-sec="skills" onclick="sec('skills',this)">
@@ -419,6 +425,18 @@ const SECTIONS = {
     ['body', 'DIY AR glasses with ambient intelligence — real-time info overlay pulled'],
     ['body', 'from local docs and the web. Wearable, always-on, context-aware.'],
     ['link', '→ github.com/Fusingchart/ai-glasses'],
+    ['gap',  ''],
+    ['proj', 'streamwatch'],
+    ['ptag', 'TypeScript · computer vision · Congressional App Challenge 2026'],
+    ['body', 'AI-powered waterway pollution detection for WA-01. Submitted to the'],
+    ['body', 'Congressional App Challenge 2026 — identifies pollution events from stream imagery.'],
+    ['link', '→ github.com/Fusingchart/StreamWatch'],
+    ['gap',  ''],
+    ['proj', 'spike-prime-pursuit'],
+    ['ptag', 'Python · robotics · pure pursuit · LEGO SPIKE Prime'],
+    ['body', 'Pure pursuit path-following controller for LEGO SPIKE Prime. Implements'],
+    ['body', 'the classic lookahead algorithm so the robot tracks curved paths smoothly.'],
+    ['link', '→ github.com/Fusingchart/SPIKE-Prime-Pure-Pursuit'],
     ['gap',  ''],
   ],
   skills: [
@@ -666,6 +684,50 @@ const PROJECTS = {
     ['link',  '→ github.com/Fusingchart/ai-glasses'],
     ['gap',   ''],
   ],
+  'streamwatch': [
+    ['cmd',   '$ cat projects/streamwatch/README.md'],
+    ['head',  'streamwatch'],
+    ['ptag',  'TypeScript · computer vision · Congressional App Challenge 2026  ·  github.com/Fusingchart/StreamWatch'],
+    ['gap',   ''],
+    ['label', 'what it is'],
+    ['body',  'An AI-powered web app that detects waterway pollution events from stream'],
+    ['body',  'imagery for Washington\'s 1st congressional district. Built for the'],
+    ['body',  'Congressional App Challenge 2026.'],
+    ['gap',   ''],
+    ['label', 'the problem'],
+    ['body',  'Water quality monitoring in WA-01 relies on infrequent manual sampling.'],
+    ['body',  'StreamWatch uses computer vision to flag potential pollution events from'],
+    ['body',  'imagery, giving a faster signal than waiting on lab results.'],
+    ['gap',   ''],
+    ['label', 'stack'],
+    ['body',  'TypeScript frontend, computer vision pipeline for image classification,'],
+    ['body',  'designed to run on publicly available stream camera feeds.'],
+    ['gap',   ''],
+    ['link',  '→ github.com/Fusingchart/StreamWatch'],
+    ['gap',   ''],
+  ],
+  'spike-pursuit': [
+    ['cmd',   '$ cat projects/spike-prime-pursuit/README.md'],
+    ['head',  'spike-prime-pursuit'],
+    ['ptag',  'Python · robotics · pure pursuit · LEGO SPIKE Prime  ·  github.com/Fusingchart/SPIKE-Prime-Pure-Pursuit'],
+    ['gap',   ''],
+    ['label', 'what it is'],
+    ['body',  'A pure pursuit path-following controller for LEGO SPIKE Prime robots.'],
+    ['body',  'The algorithm lets a robot track a curved path by always steering toward'],
+    ['body',  'a lookahead point on the path rather than its current position.'],
+    ['gap',   ''],
+    ['label', 'why pure pursuit'],
+    ['body',  'Most beginner robot controllers use bang-bang or PID to follow straight'],
+    ['body',  'lines. Pure pursuit handles curves naturally and is used in real autonomous'],
+    ['body',  'vehicles — it was worth understanding from the ground up.'],
+    ['gap',   ''],
+    ['label', 'implementation'],
+    ['body',  'Written in Python for SPIKE Prime\'s MicroPython runtime. Includes'],
+    ['body',  'lookahead distance tuning and path visualization in Jupyter.'],
+    ['gap',   ''],
+    ['link',  '→ github.com/Fusingchart/SPIKE-Prime-Pure-Pursuit'],
+    ['gap',   ''],
+  ],
   'curiosity-explorer': [
     ['cmd',   '$ cat projects/curiosity-explorer/README.md'],
     ['head',  'curiosity-explorer'],
@@ -844,6 +906,8 @@ function sec(key) {
         { label: 'open authorize-ai',      cmd: 'open authorize-ai' },
         { label: 'open curiosity-explorer',cmd: 'open curiosity-explorer' },
         { label: 'open ai-glasses',        cmd: 'open ai-glasses' },
+        { label: 'open streamwatch',       cmd: 'open streamwatch' },
+        { label: 'open spike-pursuit',     cmd: 'open spike-pursuit' },
       ]
     : [];
   const baseChips = [
@@ -870,6 +934,8 @@ function openProject(key) {
     { label: 'open authorize-ai',      cmd: 'open authorize-ai' },
     { label: 'open curiosity-explorer',cmd: 'open curiosity-explorer' },
     { label: 'open ai-glasses',        cmd: 'open ai-glasses' },
+    { label: 'open streamwatch',       cmd: 'open streamwatch' },
+    { label: 'open spike-pursuit',     cmd: 'open spike-pursuit' },
   ]);
   render(PROJECTS[key]);
 }
@@ -910,7 +976,7 @@ let histDraft = '';
 const ALL_CMDS = [
   'about', 'projects', 'skills', 'writing', 'contact',
   'help', 'git log', 'clear',
-  'open flowmorph', 'open voxelmorph', 'open authorize-ai', 'open curiosity-explorer', 'open ai-glasses',
+  'open flowmorph', 'open voxelmorph', 'open authorize-ai', 'open curiosity-explorer', 'open ai-glasses', 'open streamwatch', 'open spike-pursuit',
 ];
 
 function tabComplete(partial) {
