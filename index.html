@@ -147,19 +147,6 @@
       flex-shrink: 0;
     }
 
-    .ex-env {
-      margin-top: auto;
-      border-top: 1px solid var(--border);
-      flex-shrink: 0;
-    }
-    .ex-env-row {
-      display: flex; align-items: center; gap: 6px;
-      padding: 3px 12px 3px 16px;
-      font-size: 11px; color: var(--dim);
-      line-height: 20px;
-    }
-    .ex-env-row span { margin-left: auto; color: var(--dim2); font-size: 11px; }
-
     /* terminal */
     .terminal {
       background: var(--bg);
@@ -327,18 +314,6 @@
         </div>
       </div>
 
-      <!-- environment section -->
-      <div class="ex-section" id="sec-env">
-        <button class="ex-section-header" onclick="toggleSection('sec-env')">
-          <span class="ex-chevron">▾</span> environment
-        </button>
-        <div class="ex-body">
-          <div class="ex-env-row"><span class="ex-icon file-py" style="font-size:11px;">◈</span> python <span>3.12.3</span></div>
-          <div class="ex-env-row"><span class="ex-icon file-py" style="font-size:11px;">◈</span> pytorch <span>2.3.0+cu121</span></div>
-          <div class="ex-env-row"><span class="ex-icon file-ts" style="font-size:11px;">◈</span> node <span>20.11.0</span></div>
-          <div class="ex-env-row"><span class="ex-icon file-sh" style="font-size:11px;">◈</span> cuda <span>12.1</span></div>
-        </div>
-      </div>
     </div>
 
     <div class="terminal">
